@@ -50,7 +50,6 @@ public class ToolRental {
     private LocalDateTime endDate;
 
     @Column(columnDefinition = "varchar(20) not null default 'CONFIRM'")
-    @Pattern(regexp = "(?i)^(Confirm|Handover|Returned|Cancel)")
     private String status;
 
     @Column(columnDefinition = "decimal(10,2) not null")

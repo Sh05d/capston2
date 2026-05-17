@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/v1/workshop")
 @RequiredArgsConstructor
@@ -71,6 +74,11 @@ public class WorkshopController {
     @GetMapping("/by-category-and-audience/{category}/{audienceGender}")
     public ResponseEntity<?> workshopByCategoryAndAudience(@PathVariable String category,@PathVariable String audienceGender){
         return ResponseEntity.status(200).body(workshopService.workshopByCategoryAndAudience(category, audienceGender));
+    }
+
+    @GetMapping("/by-category-and-date/{category}/{Date}")
+    public ResponseEntity<?> workshopByCategoryAndDate(@PathVariable String category, @PathVariable LocalDate Date){
+        return ResponseEntity.status(200).body(workshopService.workshopByCategoryAndDate(category, Date));
     }
 
 }

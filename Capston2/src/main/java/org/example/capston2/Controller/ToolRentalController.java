@@ -52,6 +52,18 @@ public class ToolRentalController {
         return ResponseEntity.status(200).body(new ApiResponse("rent canceled successfully"));
     }
 
+    @PutMapping("handover-tool/{id}")
+    public ResponseEntity<?> handoverTool(@PathVariable Integer id){
+        toolRentalService.handoverTool(id);
+        return ResponseEntity.status(200).body(new ApiResponse("rent status change to handover successfully"));
+    }
+
+    @PutMapping("returned-tool/{id}")
+    public ResponseEntity<?> returnedTool(@PathVariable Integer id){
+        toolRentalService.returnedTool(id);
+        return ResponseEntity.status(200).body(new ApiResponse("rent canceled status change to returned successfully"));
+    }
+
     @PutMapping("/refund-insurance-fee/{id}/{amount}")
     public ResponseEntity<?> refundInsuranceFee(@PathVariable Integer id,@PathVariable Double amount){
         toolRentalService.refundInsuranceFee(id, amount);

@@ -15,4 +15,6 @@ public interface WorkshopBookingRepository extends JpaRepository<WorkshopBooking
 
     @Query("select b from WorkshopBooking b where b.userId=?1 and b.status='CONFIRM'")
     List<WorkshopBooking> userConfirmBookings(Integer userId);
+
+    List<WorkshopBooking> findWorkshopBookingByUserId(Integer userId);
 }

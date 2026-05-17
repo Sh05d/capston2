@@ -20,4 +20,6 @@ public interface ToolRentalRepository extends JpaRepository<ToolRental,Integer> 
 
     @Query("select r from ToolRental r where r.userId=?1 and r.status='RETURNED'")
     List<ToolRental> userReturnedRentals(Integer userId);
+
+    List<ToolRental> findToolRentalByUserId(Integer userId);
 }

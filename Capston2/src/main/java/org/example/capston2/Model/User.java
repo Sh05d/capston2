@@ -41,6 +41,10 @@ public class User {
     @NotEmpty(message = "Gender can't be empty")
     private String gender;
 
+    @Column(columnDefinition = "varchar(25) not null")
+    @NotEmpty(message = "City can't be empty")
+    private String city;
+
     @Column(columnDefinition = "decimal(8,2) not null")
     private Double balance;
 

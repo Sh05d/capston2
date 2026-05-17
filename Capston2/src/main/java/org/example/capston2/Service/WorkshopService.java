@@ -6,6 +6,7 @@ import org.example.capston2.Model.*;
 import org.example.capston2.Repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -132,4 +133,11 @@ public class WorkshopService {
     public List<Workshop> workshopByCategoryAndAudience(String category, String audienceGender){
         return workshopRepository.availableWorkshopByCategoryAndAudience(category, audienceGender);
     }
+
+    public List<Workshop> workshopByCategoryAndDate(String category, LocalDate date){
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+        return workshopRepository.availableWorkshopByCategoryAndDate(category, start, end);
+    }
+
 }

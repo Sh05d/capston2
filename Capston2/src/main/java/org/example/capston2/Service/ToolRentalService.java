@@ -139,22 +139,7 @@ public class ToolRentalService {
         oldToolRental.setQuantity(newQuantity);
         oldToolRental.setTotalPrice(newTotal);
 
-        String oldStatus = oldToolRental.getStatus();
-        String newStatus = toolRental.getStatus();
-
-        if (newStatus.equalsIgnoreCase("Handover")) {
-            if (!oldStatus.equalsIgnoreCase("Confirm")) {
-                throw new ApiException("Only confirmed rentals can be handed over");
-            }
-        } else if (newStatus.equalsIgnoreCase("Returned")) {
-            if (!oldStatus.equalsIgnoreCase("Handover")) {
-                throw new ApiException("Rental must be in handover status before return");
-            }
-        }
-        oldToolRental.setStatus(newStatus);
         toolRentalRepository.save(oldToolRental);
-
-        emailService.sendRentStatusChangeEmail(user.getEmail(), user.getUsername(), oldToolRental.getId(), newStatus);
     }
 
     public void deleteToolRental(Integer id){
@@ -187,6 +172,42 @@ public class ToolRentalService {
         // send message
         whatsappService.sendCancelRentMessage(user.getPhoneNumber(),toolRental.getTotalPrice());
         emailService.sendRentStatusChangeEmail(user.getEmail(), user.getUsername(), toolRental.getId(), toolRental.getStatus());
+    }
+
+    public void handoverTool(Integer id){
+        ToolRental rental = toolRentalRepository.findRentToolKitById(id);
+        if(rental == null){
+            throw new ApiException("Rent not found");
+        }
+        if (!rental.getStatus().equalsIgnoreCase("Confirm")) {
+            throw new ApiException("Only confirmed rentals can be handed over");
+        }
+        rental.setStatus("Handover");
+
+        toolRentalRepository.save(rental);
+        User user = userRepository.findUserById(rental.getUserId());
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+        emailService.sendRentStatusChangeEmail(user.getEmail(), user.getUsername(), rental.getId(), "Handover");
+    }
+
+    public void returnedTool(Integer id){
+        ToolRental rental = toolRentalRepository.findRentToolKitById(id);
+        if(rental == null){
+            throw new ApiException("Rent not found");
+        }
+        if (!rental.getStatus().equalsIgnoreCase("Handover")) {
+            throw new ApiException("Rental must be in handover status before return");
+        }
+        rental.setStatus("Returned");
+
+        toolRentalRepository.save(rental);
+        User user = userRepository.findUserById(rental.getUserId());
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+        emailService.sendRentStatusChangeEmail(user.getEmail(), user.getUsername(), rental.getId(), "Returned");
     }
 
     public void refundInsuranceFee(Integer id , Double amount){
