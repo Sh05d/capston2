@@ -1,0 +1,64 @@
+package org.example.capston2.Controller;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.example.capston2.Api.ApiResponse;
+import org.example.capston2.Model.ToolKit;
+import org.example.capston2.Service.ToolKitService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/toolkit")
+@RequiredArgsConstructor
+public class ToolKitController {
+    private final ToolKitService toolKitService;
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getToolKits(){
+        return ResponseEntity.status(200).body(toolKitService.getToolKits());
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addToolKit(@RequestBody @Valid ToolKit toolKit, Errors errors){
+        if(errors.hasErrors()){
+            String message = errors.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(400).body(message);
+        }
+        toolKitService.addToolKit(toolKit);
+        return ResponseEntity.status(200).body(new ApiResponse("Toolkit added successfully"));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateToolKit(@PathVariable Integer id, @RequestBody @Valid ToolKit toolKit,Errors errors){
+        if(errors.hasErrors()){
+            String message = errors.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(400).body(message);
+        }
+        toolKitService.updateToolKit(id, toolKit);
+        return ResponseEntity.status(200).body(new ApiResponse("Toolkit updated successfully"));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteToolKit(@PathVariable Integer id){
+        toolKitService.deleteToolkit(id);
+        return ResponseEntity.status(200).body(new ApiResponse("Toolkit deleted successfully"));
+    }
+
+    @GetMapping("/by-category-and-price/{category}/{maxPrice}")
+    public ResponseEntity<?> toolKitByCategoryAndPriceRange(@PathVariable String category, @PathVariable Integer maxPrice){
+        return ResponseEntity.status(200).body(toolKitService.toolKitByCategoryAndPriceRange(category, maxPrice));
+    }
+
+    @GetMapping("/by-category-and-quantity/{category}/{minQuantity}")
+    public ResponseEntity<?> toolKitByCategoryAndQuantity(@PathVariable String category, @PathVariable Integer minQuantity){
+        return ResponseEntity.status(200).body(toolKitService.toolKitByCategoryAndQuantity(category, minQuantity));
+    }
+
+    @GetMapping("/by-category-and-pickup-method/{category}/{pickupMethod}")
+    public ResponseEntity<?> toolKitByCategoryAndPickupMethod(@PathVariable String category, @PathVariable String pickupMethod){
+        return ResponseEntity.status(200).body(toolKitService.toolKitByCategoryAndPickupMethod(category, pickupMethod));
+    }
+
+}
