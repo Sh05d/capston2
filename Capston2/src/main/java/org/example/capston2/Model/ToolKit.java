@@ -42,9 +42,9 @@ public class ToolKit {
     private Double pricePerDay;
 
     @Column(columnDefinition = "decimal(8,2) not null")
-    @NotNull(message = "Insurance fee can't be null")
+    @NotNull(message = "security Deposit can't be null")
     @Positive
-    private Double insuranceFeePrtItem;
+    private Double securityDepositPertItem;
 
     @Column(columnDefinition = "int not null")
     @NotNull(message = "Quantity can't be null")

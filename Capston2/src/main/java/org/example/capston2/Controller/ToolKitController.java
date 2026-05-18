@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/v1/toolkit")
 @RequiredArgsConstructor
@@ -61,4 +63,8 @@ public class ToolKitController {
         return ResponseEntity.status(200).body(toolKitService.toolKitByCategoryAndPickupMethod(category, pickupMethod));
     }
 
+    @GetMapping("/available/quantity/{id}/{firstDate}/{secondDate}")
+    public ResponseEntity<?> availableQuantityInDate(@PathVariable Integer id, @PathVariable LocalDate firstDate, @PathVariable LocalDate secondDate){
+        return ResponseEntity.status(200).body("Available quantity to rent is "+toolKitService.availableQuantityInDate(id, firstDate, secondDate));
+    }
 }

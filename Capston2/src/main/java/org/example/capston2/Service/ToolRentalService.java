@@ -10,7 +10,7 @@ import org.example.capston2.Repository.ToolKitRepository;
 import org.example.capston2.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -28,9 +28,9 @@ public class ToolRentalService {
 
     //Add
     public void rentToolkit(ToolRental toolRental){
-        LocalDateTime rentStart = toolRental.getStartDate();
+        LocalDate rentStart = toolRental.getStartDate();
         Integer days = toolRental.getRentDays();
-        LocalDateTime rentEnd = rentStart.plusDays(days);
+        LocalDate rentEnd = rentStart.plusDays(days);
         Integer rentQuantity = toolRental.getQuantity();
         User user = userRepository.findUserById(toolRental.getUserId());
         if(user == null){
@@ -57,16 +57,22 @@ public class ToolRentalService {
             throw new ApiException("This quantity not available at this date");
         }
 
-        Double totalPrice = (toolKit.getPricePerDay()*days*rentQuantity) + (toolKit.getInsuranceFeePrtItem() * rentQuantity);
+        Double rentalPrice = toolKit.getPricePerDay()*days*rentQuantity;
+        Double depositAmount = toolKit.getSecurityDepositPertItem() * rentQuantity;
+        Double totalPrice =  + rentalPrice + depositAmount;
         // Check user balance if less than total price
         if(user.getBalance() < totalPrice){
             throw new ApiException("Balance lower than total price");
         }
-        // Set end date, total price and status of rent, and insuranceRefunded to false
+        // Set rental details including end date, prices, status, deposit, and damage information
         toolRental.setEndDate(rentEnd);
+        toolRental.setRentalPrice(rentalPrice);
+        toolRental.setDepositAmount(depositAmount);
         toolRental.setTotalPrice(totalPrice);
         toolRental.setStatus("Confirm");
-        toolRental.setInsuranceRefunded(false);
+        toolRental.setIsDepositRefunded(false);
+        toolRental.setHasDamage(false);
+        toolRental.setDamageCost(0.0);
 
         user.setBalance(user.getBalance() - totalPrice);
         userRepository.save(user);
@@ -91,11 +97,11 @@ public class ToolRentalService {
             throw new ApiException("User not found");
         }
 
-        LocalDateTime newStart = toolRental.getStartDate();
+        LocalDate newStart = toolRental.getStartDate();
         Integer newDays = toolRental.getRentDays();
         Integer newQuantity = toolRental.getQuantity();
 
-        LocalDateTime newEnd = newStart.plusDays(newDays);
+        LocalDate newEnd = newStart.plusDays(newDays);
 
         if (newQuantity > toolKit.getQuantity()) {
             throw new ApiException("Requested quantity exceeds toolkit stock");
@@ -117,7 +123,9 @@ public class ToolRentalService {
         }
 
         double oldTotal = oldToolRental.getTotalPrice();
-        double newTotal = (toolKit.getPricePerDay() * newDays * newQuantity) + (toolKit.getInsuranceFeePrtItem() * newQuantity);
+        Double newRentalPrice = toolKit.getPricePerDay() * newDays * newQuantity;
+        Double newDepositAmount = toolKit.getSecurityDepositPertItem() * newQuantity;
+        double newTotal = newRentalPrice + newDepositAmount;
 
         double difference = newTotal - oldTotal;
 
@@ -137,6 +145,8 @@ public class ToolRentalService {
         oldToolRental.setEndDate(newEnd);
         oldToolRental.setRentDays(newDays);
         oldToolRental.setQuantity(newQuantity);
+        oldToolRental.setRentalPrice(newRentalPrice);
+        oldToolRental.setDepositAmount(newDepositAmount);
         oldToolRental.setTotalPrice(newTotal);
 
         toolRentalRepository.save(oldToolRental);
@@ -210,50 +220,59 @@ public class ToolRentalService {
         emailService.sendRentStatusChangeEmail(user.getEmail(), user.getUsername(), rental.getId(), "Returned");
     }
 
-    public void refundInsuranceFee(Integer id , Double amount){
-        if (amount <= 0) {
-            throw new ApiException("Amount should be more than 0");
+    public void markDamage(Integer id, Double damageCost){
+        if(damageCost < 0){
+            throw new ApiException("Damage cost should be positive");
         }
-
         ToolRental toolRental = toolRentalRepository.findRentToolKitById(id);
         if (toolRental == null) {
             throw new ApiException("Rent not found");
         }
-        // Ensure insurance fee not already refunded
-        if (toolRental.getInsuranceRefunded()) {
-            throw new ApiException("Insurance fee already refunded");
+        if(toolRental.getDepositAmount() < damageCost){
+            throw new ApiException("Damage cost exceed deposit amount");
         }
-
-        User user = userRepository.findUserById(toolRental.getUserId());
-        if (user == null) {
-            throw new ApiException("User not found");
+        if(!toolRental.getStatus().equalsIgnoreCase("Returned")){
+            throw new ApiException("Can't mark damage unless tool returned");
         }
+        toolRental.setHasDamage(true);
+        toolRental.setDamageCost(damageCost);
+        toolRentalRepository.save(toolRental);
+    }
 
-        ToolKit toolKit = toolKitRepository.findToolKitsById(toolRental.getToolKitId());
-        if (toolKit == null) {
-            throw new ApiException("Toolkit not found");
+    public void refundDeposit(Integer id){
+        ToolRental toolRental = toolRentalRepository.findRentToolKitById(id);
+        if (toolRental == null) {
+            throw new ApiException("Rent not found");
         }
-
+        // Ensure Deposit not already refunded
+        if (toolRental.getIsDepositRefunded()) {
+            throw new ApiException("Security deposit already refunded");
+        }
         // Allow refund after return
         if (!toolRental.getStatus().equalsIgnoreCase("Returned")) {
             throw new ApiException("Insurance refund allowed after return");
         }
+        User user = userRepository.findUserById(toolRental.getUserId());
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+        Double refundAmount = toolRental.getDepositAmount();
 
-        // Prevent over refund
-        if (amount > toolKit.getInsuranceFeePrtItem() * toolRental.getQuantity()) {
-            throw new ApiException("Refund exceeds paid insurance amount");
+        // Reduce damage cost if there is damage
+        if(toolRental.getHasDamage()){
+            refundAmount -= toolRental.getDamageCost();
         }
 
         // Refund insurance fee to user
-        user.setBalance(user.getBalance() + amount);
+        user.setBalance(user.getBalance() + refundAmount);
         userRepository.save(user);
 
         // Set true in insuranceRefunded
-        toolRental.setInsuranceRefunded(true);
+        toolRental.setIsDepositRefunded(true);
         toolRentalRepository.save(toolRental);
 
         //Email
-        emailService.sendInsuranceRefundEmail(user.getEmail(), user.getUsername(), amount);
+        emailService.sendInsuranceRefundEmail(user.getEmail(), user.getUsername(), refundAmount);
     }
 
     public List<ToolRental> userUpcomingRentals(Integer userId){

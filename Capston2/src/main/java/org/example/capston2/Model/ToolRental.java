@@ -3,14 +3,13 @@ package org.example.capston2.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -32,8 +31,8 @@ public class ToolRental {
 
     @Column(columnDefinition = "datetime not null")
     @NotNull(message = "Start date can't be null")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
 
     @Column(columnDefinition = "int not null")
     @NotNull(message = "Rent days can't be null")
@@ -46,15 +45,28 @@ public class ToolRental {
     private Integer quantity;
 
     @Column(columnDefinition = "datetime not null")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime endDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
 
     @Column(columnDefinition = "varchar(20) not null default 'CONFIRM'")
     private String status;
 
     @Column(columnDefinition = "decimal(10,2) not null")
+    private Double rentalPrice;
+
+    @Column(columnDefinition = "decimal(10,2) not null")
+    private Double depositAmount;
+
+    @Column(columnDefinition = "decimal(10,2) not null")
     private Double totalPrice;
 
     @Column(columnDefinition = "boolean")
-    private Boolean insuranceRefunded;
+    private Boolean isDepositRefunded;
+
+    @Column(columnDefinition = "boolean")
+    private Boolean hasDamage;
+
+    @Column(columnDefinition = "decimal(6,2) not null")
+    private Double damageCost;
+
 }

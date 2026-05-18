@@ -64,10 +64,16 @@ public class ToolRentalController {
         return ResponseEntity.status(200).body(new ApiResponse("rent canceled status change to returned successfully"));
     }
 
-    @PutMapping("/refund-insurance-fee/{id}/{amount}")
-    public ResponseEntity<?> refundInsuranceFee(@PathVariable Integer id,@PathVariable Double amount){
-        toolRentalService.refundInsuranceFee(id, amount);
-        return ResponseEntity.status(200).body(new ApiResponse("Insurance fee refund success"));
+    @PutMapping("/mark-damage/{id}/{damageCost}")
+    public ResponseEntity<?> markDamage(@PathVariable Integer id, @PathVariable Double damageCost){
+        toolRentalService.markDamage(id, damageCost);
+        return ResponseEntity.status(200).body(new ApiResponse("mark damage success"));
+    }
+
+    @PutMapping("/refund-deposit/{id}")
+    public ResponseEntity<?> refundInsuranceFee(@PathVariable Integer id){
+        toolRentalService.refundDeposit(id);
+        return ResponseEntity.status(200).body(new ApiResponse("deposit refunded success"));
     }
 
     @GetMapping("/user-upcoming/{userId}")

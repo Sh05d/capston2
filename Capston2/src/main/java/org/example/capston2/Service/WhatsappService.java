@@ -7,7 +7,7 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 public class WhatsappService {
@@ -45,7 +45,7 @@ public class WhatsappService {
         sendMessage(to, message);
     }
 
-    public void sendRentToolkitMessage(String to, String toolkitName, Double totalPrice, LocalDateTime endDate) {
+    public void sendRentToolkitMessage(String to, String toolkitName, Double totalPrice, LocalDate endDate) {
         String message = "مرحباً،\n\n" +
                         "تم تأكيد عملية استئجار الأدوات.\n\n" +
                         "اسم الأدوات: " + toolkitName + "\n" +
