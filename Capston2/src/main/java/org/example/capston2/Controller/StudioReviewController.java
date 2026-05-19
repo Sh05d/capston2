@@ -21,21 +21,13 @@ public class StudioReviewController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addStudioReview(@RequestBody @Valid StudioReview studioReview, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addStudioReview(@RequestBody @Valid StudioReview studioReview){
         studioReviewService.addStudioReview(studioReview);
         return ResponseEntity.status(200).body(new ApiResponse("Review added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateStudioReview(@PathVariable Integer id, @RequestBody @Valid StudioReview studioReview, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateStudioReview(@PathVariable Integer id, @RequestBody @Valid StudioReview studioReview){
         studioReviewService.updateStudioReview(id, studioReview);
         return ResponseEntity.status(200).body(new ApiResponse("Review updated successfully"));
     }

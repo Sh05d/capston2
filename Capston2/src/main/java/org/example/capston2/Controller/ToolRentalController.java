@@ -21,21 +21,13 @@ public class ToolRentalController {
     }
 
     @PostMapping("/rent")
-    public ResponseEntity<?> rentToolkit(@RequestBody @Valid ToolRental toolRental, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> rentToolkit(@RequestBody @Valid ToolRental toolRental){
         toolRentalService.rentToolkit(toolRental);
         return ResponseEntity.status(200).body(new ApiResponse("ToolKit rented successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateToolRental(@PathVariable Integer id,@RequestBody @Valid ToolRental toolRental, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateToolRental(@PathVariable Integer id,@RequestBody @Valid ToolRental toolRental){
         toolRentalService.updateToolRental(id, toolRental);
         return ResponseEntity.status(200).body(new ApiResponse("Tool renal updated successfully"));
     }

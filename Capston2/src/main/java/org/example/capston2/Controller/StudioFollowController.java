@@ -21,21 +21,13 @@ public class StudioFollowController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addStudioFollow(@RequestBody @Valid StudioFollow studioFollow, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addStudioFollow(@RequestBody @Valid StudioFollow studioFollow){
         studioFollowService.addStudioFollow(studioFollow);
         return ResponseEntity.status(200).body(new ApiResponse("Follow success"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateStudioFollow(@PathVariable Integer id, @RequestBody @Valid StudioFollow studioFollow, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateStudioFollow(@PathVariable Integer id, @RequestBody @Valid StudioFollow studioFollow){
         studioFollowService.updateStudioFollow(id, studioFollow);
         return ResponseEntity.status(200).body(new ApiResponse("Follow update success"));
     }

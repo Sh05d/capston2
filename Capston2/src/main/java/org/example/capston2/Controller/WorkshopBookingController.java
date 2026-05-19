@@ -21,21 +21,13 @@ public class WorkshopBookingController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<?> bookWorkshop(@RequestBody @Valid WorkshopBooking workshopBooking, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> bookWorkshop(@RequestBody @Valid WorkshopBooking workshopBooking){
         workshopBookingService.BookWorkshop(workshopBooking);
         return ResponseEntity.status(200).body(new ApiResponse("You booked workshop successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateBooking(@PathVariable Integer id,@RequestBody @Valid WorkshopBooking workshopBooking, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateBooking(@PathVariable Integer id,@RequestBody @Valid WorkshopBooking workshopBooking){
         workshopBookingService.updateWorkshopBooking(id, workshopBooking);
         return ResponseEntity.status(200).body(new ApiResponse("workshop booking updated successfully"));
     }

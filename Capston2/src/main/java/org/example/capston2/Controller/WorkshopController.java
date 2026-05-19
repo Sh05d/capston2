@@ -23,21 +23,13 @@ public class WorkshopController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addWorkshop(@RequestBody @Valid Workshop workshop, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addWorkshop(@RequestBody @Valid Workshop workshop){
         workshopService.addWorkshop(workshop);
         return ResponseEntity.status(200).body(new ApiResponse("Workshop added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateWorkshop(@PathVariable Integer id, @RequestBody @Valid Workshop workshop, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateWorkshop(@PathVariable Integer id, @RequestBody @Valid Workshop workshop){
         workshopService.updateWorkshop(id, workshop);
         return ResponseEntity.status(200).body(new ApiResponse("Workshop updated successfully"));
     }

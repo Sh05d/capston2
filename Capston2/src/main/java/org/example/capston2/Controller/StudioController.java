@@ -21,21 +21,13 @@ public class StudioController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addStudio(@RequestBody @Valid Studio studio, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addStudio(@RequestBody @Valid Studio studio){
         studioService.addStudio(studio);
         return ResponseEntity.status(200).body(new ApiResponse("Studio added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateStudio(@PathVariable Integer id, @RequestBody @Valid Studio studio, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateStudio(@PathVariable Integer id, @RequestBody @Valid Studio studio){
         studioService.updateStudio(id, studio);
         return ResponseEntity.status(200).body(new ApiResponse("Studio updated successfully"));
     }

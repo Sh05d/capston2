@@ -23,21 +23,13 @@ public class ToolKitController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addToolKit(@RequestBody @Valid ToolKit toolKit, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addToolKit(@RequestBody @Valid ToolKit toolKit){
         toolKitService.addToolKit(toolKit);
         return ResponseEntity.status(200).body(new ApiResponse("Toolkit added successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateToolKit(@PathVariable Integer id, @RequestBody @Valid ToolKit toolKit,Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateToolKit(@PathVariable Integer id, @RequestBody @Valid ToolKit toolKit){
         toolKitService.updateToolKit(id, toolKit);
         return ResponseEntity.status(200).body(new ApiResponse("Toolkit updated successfully"));
     }
