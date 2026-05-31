@@ -44,7 +44,7 @@ public class ToolKit {
     @Column(columnDefinition = "decimal(8,2) not null")
     @NotNull(message = "security Deposit can't be null")
     @Positive
-    private Double securityDepositPertItem;
+    private Double securityDepositPerItem;
 
     @Column(columnDefinition = "int not null")
     @NotNull(message = "Quantity can't be null")

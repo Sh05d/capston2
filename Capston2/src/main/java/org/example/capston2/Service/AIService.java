@@ -92,6 +92,9 @@ public class AIService {
                     
                     RULES:
                     - Recommend ONLY from given workshops
+                    - Return a MAXIMUM of 5 workshops
+                    - If more than 5 workshops match, keep only the 5 best matches
+                    - Sort results from best match to lowest
                     - Prefer same city
                     - Prefer similar categories to history
                     - Prefer higher rated studios
@@ -188,6 +191,9 @@ public class AIService {
             
             RULES:
             - Recommend ONLY from given toolkits
+            - Return a MAXIMUM of 5 toolkits
+            - If more than 5 toolkits match, keep only the 5 best matches
+            - Sort results from best match to lowest
             - Prefer same city
             - Prefer similar categories to history
             - Prefer higher rated studios

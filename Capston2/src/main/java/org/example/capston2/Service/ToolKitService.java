@@ -24,11 +24,12 @@ public class ToolKitService {
         return toolKitRepository.findAll();
     }
 
-    public void addToolKit(ToolKit toolKit){
-        Studio studio = studioRepository.findStudioById(toolKit.getStudioId());
+    public void addToolKit(Integer studioId, ToolKit toolKit){
+        Studio studio = studioRepository.findStudioById(studioId);
         if(studio == null){
             throw new ApiException("Studio not exist");
         }
+        toolKit.setStudioId(studioId);
         toolKitRepository.save(toolKit);
     }
 
@@ -45,7 +46,7 @@ public class ToolKitService {
         oldToolKit.setDescription(toolKit.getDescription());
         oldToolKit.setCategory(toolKit.getCategory());
         oldToolKit.setPricePerDay(toolKit.getPricePerDay());
-        oldToolKit.setSecurityDepositPertItem(toolKit.getSecurityDepositPertItem());
+        oldToolKit.setSecurityDepositPerItem(toolKit.getSecurityDepositPerItem());
         oldToolKit.setQuantity(oldToolKit.getQuantity());
         oldToolKit.setPickupMethod(toolKit.getPickupMethod());
         oldToolKit.setStudioId(toolKit.getStudioId());

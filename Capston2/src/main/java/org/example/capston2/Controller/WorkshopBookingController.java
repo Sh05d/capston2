@@ -6,7 +6,6 @@ import org.example.capston2.Api.ApiResponse;
 import org.example.capston2.Model.WorkshopBooking;
 import org.example.capston2.Service.WorkshopBookingService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,9 +19,9 @@ public class WorkshopBookingController {
         return ResponseEntity.status(200).body(workshopBookingService.getWorkshopBookings());
     }
 
-    @PostMapping("/book")
-    public ResponseEntity<?> bookWorkshop(@RequestBody @Valid WorkshopBooking workshopBooking){
-        workshopBookingService.BookWorkshop(workshopBooking);
+    @PostMapping("/{userId}/book/{workshopId}")
+    public ResponseEntity<?> bookWorkshop(@PathVariable Integer userId, @PathVariable Integer workshopId, @RequestBody @Valid WorkshopBooking workshopBooking){
+        workshopBookingService.BookWorkshop(userId, workshopId, workshopBooking);
         return ResponseEntity.status(200).body(new ApiResponse("You booked workshop successfully"));
     }
 

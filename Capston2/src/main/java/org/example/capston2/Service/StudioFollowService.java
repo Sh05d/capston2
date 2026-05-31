@@ -23,15 +23,18 @@ public class StudioFollowService {
         return studioFollowRepository.findAll();
     }
 
-    public void addStudioFollow(StudioFollow studioFollow){
-        User user = userRepository.findUserById(studioFollow.getUserId());
+    public void addStudioFollow(Integer userId, Integer studioId){
+        User user = userRepository.findUserById(userId);
         if(user == null){
             throw new ApiException("User not exist");
         }
-        Studio studio = studioRepository.findStudioById(studioFollow.getStudioId());
+        Studio studio = studioRepository.findStudioById(studioId);
         if(studio == null){
             throw new ApiException("Studio not found");
         }
+        StudioFollow studioFollow = new StudioFollow();
+        studioFollow.setUserId(userId);
+        studioFollow.setStudioId(studioId);
         studioFollow.setNotify(true);
         studioFollowRepository.save(studioFollow);
     }
@@ -64,6 +67,4 @@ public class StudioFollowService {
             studioFollowRepository.save(studioFollow);
         }
     }
-
-
 }

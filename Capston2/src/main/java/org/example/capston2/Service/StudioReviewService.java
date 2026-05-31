@@ -23,12 +23,12 @@ public class StudioReviewService {
         return studioReviewRepository.findAll();
     }
 
-    public void addStudioReview(StudioReview studioReview){
-        User user = userRepository.findUserById(studioReview.getUserId());
+    public void addStudioReview(Integer userId, Integer studioId, StudioReview studioReview){
+        User user = userRepository.findUserById(userId);
         if(user == null){
             throw new ApiException("User not exist");
         }
-        Studio studio = studioRepository.findStudioById(studioReview.getStudioId());
+        Studio studio = studioRepository.findStudioById(studioId);
         if(studio == null){
             throw new ApiException("Studio not found");
         }
@@ -57,6 +57,8 @@ public class StudioReviewService {
             throw new ApiException("Can't add review");
         }
 
+        studioReview.setUserId(userId);
+        studioReview.setStudioId(studioId);
         studioReviewRepository.save(studioReview);
 
         double totalRating = studio.getRate() * studio.getNumberOfRating() + studioReview.getRate();

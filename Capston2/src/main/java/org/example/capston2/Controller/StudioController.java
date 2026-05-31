@@ -6,7 +6,6 @@ import org.example.capston2.Api.ApiResponse;
 import org.example.capston2.Model.Studio;
 import org.example.capston2.Service.StudioService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

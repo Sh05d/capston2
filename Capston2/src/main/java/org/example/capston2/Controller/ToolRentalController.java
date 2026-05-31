@@ -6,7 +6,6 @@ import org.example.capston2.Api.ApiResponse;
 import org.example.capston2.Model.ToolRental;
 import org.example.capston2.Service.ToolRentalService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,9 +19,9 @@ public class ToolRentalController {
         return ResponseEntity.status(200).body(toolRentalService.getRentToolKits());
     }
 
-    @PostMapping("/rent")
-    public ResponseEntity<?> rentToolkit(@RequestBody @Valid ToolRental toolRental){
-        toolRentalService.rentToolkit(toolRental);
+    @PostMapping("/{userId}/rent/{toolKitId}")
+    public ResponseEntity<?> rentToolkit(@PathVariable Integer userId, @PathVariable Integer toolKitId ,@RequestBody @Valid ToolRental toolRental){
+        toolRentalService.rentToolkit(userId, toolKitId, toolRental);
         return ResponseEntity.status(200).body(new ApiResponse("ToolKit rented successfully"));
     }
 

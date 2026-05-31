@@ -6,7 +6,6 @@ import org.example.capston2.Api.ApiResponse;
 import org.example.capston2.Model.ToolKit;
 import org.example.capston2.Service.ToolKitService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,9 +21,9 @@ public class ToolKitController {
         return ResponseEntity.status(200).body(toolKitService.getToolKits());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addToolKit(@RequestBody @Valid ToolKit toolKit){
-        toolKitService.addToolKit(toolKit);
+    @PostMapping("/add/{studioId}")
+    public ResponseEntity<?> addToolKit(@PathVariable Integer studioId, @RequestBody @Valid ToolKit toolKit){
+        toolKitService.addToolKit(studioId, toolKit);
         return ResponseEntity.status(200).body(new ApiResponse("Toolkit added successfully"));
     }
 
@@ -55,8 +54,8 @@ public class ToolKitController {
         return ResponseEntity.status(200).body(toolKitService.toolKitByCategoryAndPickupMethod(category, pickupMethod));
     }
 
-    @GetMapping("/available/quantity/{id}/{firstDate}/{secondDate}")
+    @GetMapping("/available-quantity/{id}/{firstDate}/{secondDate}")
     public ResponseEntity<?> availableQuantityInDate(@PathVariable Integer id, @PathVariable LocalDate firstDate, @PathVariable LocalDate secondDate){
-        return ResponseEntity.status(200).body("Available quantity to rent is "+toolKitService.availableQuantityInDate(id, firstDate, secondDate));
+        return ResponseEntity.status(200).body(new ApiResponse("Available quantity to rent is "+toolKitService.availableQuantityInDate(id, firstDate, secondDate)));
     }
 }

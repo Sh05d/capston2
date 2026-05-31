@@ -25,12 +25,12 @@ public class WorkshopBookingService {
         return workshopBookingRepository.findAll();
     }
 
-    public void BookWorkshop(WorkshopBooking workshopBooking){
-        User user = userRepository.findUserById(workshopBooking.getUserId());
+    public void BookWorkshop(Integer userId, Integer workshopId, WorkshopBooking workshopBooking){
+        User user = userRepository.findUserById(userId);
         if(user == null){
             throw new ApiException("User not found");
         }
-        Workshop workshop = workshopRepository.findWorkshopById(workshopBooking.getWorkshopId());
+        Workshop workshop = workshopRepository.findWorkshopById(workshopId);
         if(workshop == null){
             throw new ApiException("Workshop not found");
         }
@@ -68,6 +68,8 @@ public class WorkshopBookingService {
         workshopRepository.save(workshop);
 
         // Set book total price and status to confirm
+        workshopBooking.setUserId(userId);
+        workshopBooking.setWorkshopId(workshopId);
         workshopBooking.setStatus("Confirm");
         workshopBooking.setTotalPrice(totalPrice);
         workshopBookingRepository.save(workshopBooking);

@@ -6,7 +6,6 @@ import org.example.capston2.Api.ApiResponse;
 import org.example.capston2.Model.Workshop;
 import org.example.capston2.Service.WorkshopService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,9 +21,9 @@ public class WorkshopController {
         return ResponseEntity.status(200).body(workshopService.getWorkshops());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addWorkshop(@RequestBody @Valid Workshop workshop){
-        workshopService.addWorkshop(workshop);
+    @PostMapping("/add/{studioId}")
+    public ResponseEntity<?> addWorkshop(@PathVariable Integer studioId, @RequestBody @Valid Workshop workshop){
+        workshopService.addWorkshop(studioId, workshop);
         return ResponseEntity.status(200).body(new ApiResponse("Workshop added successfully"));
     }
 

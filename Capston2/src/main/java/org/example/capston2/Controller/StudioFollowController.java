@@ -6,7 +6,6 @@ import org.example.capston2.Api.ApiResponse;
 import org.example.capston2.Model.StudioFollow;
 import org.example.capston2.Service.StudioFollowService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,9 +19,9 @@ public class StudioFollowController {
         return ResponseEntity.status(200).body(studioFollowService.getStudioFollows());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addStudioFollow(@RequestBody @Valid StudioFollow studioFollow){
-        studioFollowService.addStudioFollow(studioFollow);
+    @PostMapping("/{userId}/follow/{studioId}")
+    public ResponseEntity<?> addStudioFollow(@PathVariable Integer userId,@PathVariable Integer studioId){
+        studioFollowService.addStudioFollow(userId,studioId);
         return ResponseEntity.status(200).body(new ApiResponse("Follow success"));
     }
 

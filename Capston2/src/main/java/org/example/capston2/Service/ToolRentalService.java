@@ -27,16 +27,16 @@ public class ToolRentalService {
     }
 
     //Add
-    public void rentToolkit(ToolRental toolRental){
+    public void rentToolkit(Integer userId, Integer toolKitId, ToolRental toolRental){
         LocalDate rentStart = toolRental.getStartDate();
         Integer days = toolRental.getRentDays();
         LocalDate rentEnd = rentStart.plusDays(days);
         Integer rentQuantity = toolRental.getQuantity();
-        User user = userRepository.findUserById(toolRental.getUserId());
+        User user = userRepository.findUserById(userId);
         if(user == null){
             throw new ApiException("User not exist");
         }
-        ToolKit toolKit = toolKitRepository.findToolKitsById(toolRental.getToolKitId());
+        ToolKit toolKit = toolKitRepository.findToolKitsById(toolKitId);
         if(toolKit == null){
             throw new ApiException("Toolkit not exist");
         }
@@ -58,13 +58,15 @@ public class ToolRentalService {
         }
 
         Double rentalPrice = toolKit.getPricePerDay()*days*rentQuantity;
-        Double depositAmount = toolKit.getSecurityDepositPertItem() * rentQuantity;
+        Double depositAmount = toolKit.getSecurityDepositPerItem() * rentQuantity;
         Double totalPrice =  + rentalPrice + depositAmount;
         // Check user balance if less than total price
         if(user.getBalance() < totalPrice){
             throw new ApiException("Balance lower than total price");
         }
         // Set rental details including end date, prices, status, deposit, and damage information
+        toolRental.setUserId(userId);
+        toolRental.setToolKitId(toolKitId);
         toolRental.setEndDate(rentEnd);
         toolRental.setRentalPrice(rentalPrice);
         toolRental.setDepositAmount(depositAmount);
@@ -124,7 +126,7 @@ public class ToolRentalService {
 
         double oldTotal = oldToolRental.getTotalPrice();
         Double newRentalPrice = toolKit.getPricePerDay() * newDays * newQuantity;
-        Double newDepositAmount = toolKit.getSecurityDepositPertItem() * newQuantity;
+        Double newDepositAmount = toolKit.getSecurityDepositPerItem() * newQuantity;
         double newTotal = newRentalPrice + newDepositAmount;
 
         double difference = newTotal - oldTotal;

@@ -6,7 +6,6 @@ import org.example.capston2.Api.ApiResponse;
 import org.example.capston2.Model.StudioReview;
 import org.example.capston2.Service.StudioReviewService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,9 +19,9 @@ public class StudioReviewController {
         return ResponseEntity.status(200).body(studioReviewService.getStudioReviews());
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addStudioReview(@RequestBody @Valid StudioReview studioReview){
-        studioReviewService.addStudioReview(studioReview);
+    @PostMapping("/{userId}/add=review-on/{studioId}")
+    public ResponseEntity<?> addStudioReview(@PathVariable Integer userId,@PathVariable Integer studioId, @RequestBody @Valid StudioReview studioReview){
+        studioReviewService.addStudioReview(userId, studioId, studioReview);
         return ResponseEntity.status(200).body(new ApiResponse("Review added successfully"));
     }
 

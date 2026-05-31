@@ -26,11 +26,12 @@ public class WorkshopService {
         return workshopRepository.findAll();
     }
 
-    public void addWorkshop(Workshop workshop){
-        Studio studio = studioRepository.findStudioById(workshop.getStudioId());
+    public void addWorkshop(Integer studioId, Workshop workshop){
+        Studio studio = studioRepository.findStudioById(studioId);
         if(studio == null){
             throw new ApiException("Studio not found");
         }
+        workshop.setStudioId(studioId);
         workshop.setStatus("Schedule");
         workshopRepository.save(workshop);
         // Send email about new workshop to studio followers
